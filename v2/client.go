@@ -100,11 +100,13 @@ type RateLimitInterval string
 // Endpoints
 const (
 	baseAPIMainURL    = "https://api.binance.com"
+	baseAPIUSURL      = "https://api.binance.us"
 	baseAPITestnetURL = "https://testnet.binance.vision"
 )
 
 // UseTestnet switch all the API endpoints from production to the testnet
 var UseTestnet = false
+var UseUS = true
 
 // Redefining the standard package
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -248,6 +250,11 @@ func getAPIEndpoint() string {
 	if UseTestnet {
 		return baseAPITestnetURL
 	}
+
+	if UseUS {
+		return baseAPIUSURL
+	}
+
 	return baseAPIMainURL
 }
 
