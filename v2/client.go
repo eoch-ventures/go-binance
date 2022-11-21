@@ -106,7 +106,7 @@ const (
 
 // UseTestnet switch all the API endpoints from production to the testnet
 var UseTestnet = false
-var UseUS = true
+var UseUS = false
 
 // Redefining the standard package
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
