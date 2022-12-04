@@ -1,7 +1,10 @@
 package delivery
 
 import (
+	"log"
 	"net/http"
+	"net/url"
+	"os"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -24,9 +27,30 @@ func newWsConfig(endpoint string) *WsConfig {
 	}
 }
 
+func getProxyURL() *url.URL {
+	rawURL := os.Getenv("BINANCE_PROXY_URL")
+
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return parsedURL
+}
+
+var ProxyURL = getProxyURL()
+
+func proxyFunc(req *http.Request) (*url.URL, error) {
+	if req.URL.Scheme == "https" {
+		return ProxyURL, nil
+	} else {
+		return nil, nil
+	}
+}
+
 var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	Dialer := websocket.Dialer{
-		Proxy:             http.ProxyFromEnvironment,
+		Proxy:             proxyFunc,
 		HandshakeTimeout:  45 * time.Second,
 		EnableCompression: false,
 	}
